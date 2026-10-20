@@ -6,6 +6,31 @@ A habit journal built with React and JavaScript, a Cloudflare Worker, and D1. Tr
 
 Rhythm currently supports one administrator and one journal per deployment. Local development is supported out of the box. Hosted use requires an owner-private Sites deployment with a trusted identity gateway; other hosting environments need authentication integration before deployment. See the [deployment boundary](#deployment-boundary).
 
+## Screenshots
+
+All screenshots use fictional demo data. No personal journals or statistics are included.
+
+**Daily journal** — check in on your habits and record time by category.
+
+![Rhythm daily journal in light appearance with fictional habits](docs/images/daily-journal.jpg)
+
+**Insights** — explore activity, time invested, and a year of small steps.
+
+![Rhythm insights with fictional activity and a yearly calendar](docs/images/insights.jpg)
+
+<details>
+<summary>See dark appearance and the mobile journal</summary>
+
+**Dark appearance**
+
+![Rhythm daily journal in dark appearance with fictional habits](docs/images/dark-appearance.jpg)
+
+**Mobile journal**
+
+<img src="docs/images/mobile-journal.jpg" alt="Rhythm mobile journal with fictional habits" width="390">
+
+</details>
+
 ## Features
 
 - Checkboxes, single and multiple choices, duration, numbers, and text entries.
@@ -20,10 +45,8 @@ Rhythm currently supports one administrator and one journal per deployment. Loca
 
 Install Node.js 24 or later and Git. The interface, application logic, build tools, and server are JavaScript; no additional SDK is required.
 
-Replace `YOUR_ACCOUNT` with the GitHub user or organization that hosts your copy of this repository:
-
 ```sh
-git clone https://github.com/YOUR_ACCOUNT/Rhythm.git
+git clone https://github.com/happyer29/Rhythm.git
 cd Rhythm
 npm ci
 npm run build

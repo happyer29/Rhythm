@@ -33,6 +33,8 @@ const extensionsByDirectory = {
 };
 const exactPaths = new Set([
   'assets/icon-256.png', 'web/favicon.png', 'web/favicon.svg', 'deploy/hosting.example.json',
+  'docs/images/daily-journal.jpg', 'docs/images/insights.jpg',
+  'docs/images/dark-appearance.jpg', 'docs/images/mobile-journal.jpg',
   '.github/PULL_REQUEST_TEMPLATE.md', '.github/pull_request_template.md',
   '.github/dependabot.yml', '.github/dependabot.yaml',
 ]);

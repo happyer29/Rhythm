@@ -63,6 +63,8 @@ test('source export uses an allowlist even for tracked personal or generated fil
     'drizzle/meta/0000_snapshot.json', 'scripts/build.sh', 'test/example.test.mjs',
     'assets/icon-256.png', 'deploy/hosting.example.json',
     'docs/getting-started.md', '.github/workflows/checks.yml',
+    'docs/images/daily-journal.jpg', 'docs/images/insights.jpg',
+    'docs/images/dark-appearance.jpg', 'docs/images/mobile-journal.jpg',
     '.github/ISSUE_TEMPLATE/bug.yml', '.github/PULL_REQUEST_TEMPLATE.md',
   ];
   const excluded = [
@@ -78,7 +80,8 @@ test('source export uses an allowlist even for tracked personal or generated fil
     'drizzle/dump.sql', 'drizzle/0002.sql',
     'db/account.sqlite', 'test/journal.sqlite3', 'src/account.db',
     'worker/account.sqlite-wal', 'web/journal.json',
-    'docs/journal.csv', 'test/journal.tsv', 'scripts/account.sql',
+    'docs/journal.csv', 'docs/images/private.png', 'docs/images/private.jpg',
+    'docs/images/screenshots/private.jpg', 'test/journal.tsv', 'scripts/account.sql',
   ];
   for (const path of included) await put(path);
   for (const path of excluded) await put(path, 'SYNTHETIC_PRIVATE_MARKER');
