@@ -1,0 +1,39 @@
+# Tooling and generated output
+.dart_tool/
+.flutter-plugins-dependencies
+.idea/
+*.iml
+.DS_Store
+build/
+dist/
+node_modules/
+.sites-runtime/
+.wrangler/
+worker/generated-assets.mjs
+
+# Private runtime data, exports, and local review artifacts
+.rhythm-data/
+work/
+artifacts/
+exports/
+backups/
+screenshots/
+*.sqlite
+*.sqlite-*
+*.sqlite3
+*.sqlite3-*
+*.db
+*.db-*
+*.log
+
+# Machine-specific deployment configuration and credentials
+.openai/
+.env
+.env.*
+!.env.example
+.dev.vars
+.dev.vars.*
+*.pem
+*.key
+.codex/
+.agents/

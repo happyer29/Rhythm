@@ -1,0 +1,44 @@
+name: Bug report
+description: Report a reproducible problem in Rhythm Web.
+title: "[Bug]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use synthetic data in examples and screenshots. Do not attach personal journal exports, databases, credentials, or private deployment configuration.
+        For security vulnerabilities, read SECURITY.md in the repository root and follow its private reporting guidance instead of posting exploit details here.
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happened?
+      description: Describe the actual behavior and what you expected.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: Provide the smallest example that reproduces the problem with synthetic data.
+      placeholder: |
+        1. Create a duration habit with a category named Reading.
+        2. ...
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Include the app version or commit, browser, operating system, and whether you use local preview or a hosted instance.
+      placeholder: |
+        App version / commit:
+        Browser:
+        Operating system:
+        Local or hosted:
+        Flutter / Node.js versions, if relevant:
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Additional evidence
+      description: Add relevant errors or screenshots after removing personal data and secrets.
