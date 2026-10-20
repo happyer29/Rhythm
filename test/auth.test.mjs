@@ -131,7 +131,7 @@ test('built public assets contain only the generic icon',() => {
   }
   assert.ok(existsSync(new URL('../dist/server/index.js',import.meta.url)));
   const walk = dir => readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(new URL(e.name+'/',dir)):[e.name]);
-  assert.deepEqual(walk(new URL('../dist/client/',import.meta.url)),['favicon.png']);
+  assert.deepEqual(walk(new URL('../dist/client/',import.meta.url)),['favicon.png','favicon.svg']);
   const hosting = new URL('../.openai/hosting.json',import.meta.url);
   if (existsSync(hosting)) {
     assert.equal(readFileSync(hosting,'utf8').includes('"static"'),false);

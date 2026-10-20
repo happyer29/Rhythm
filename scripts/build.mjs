@@ -27,7 +27,7 @@ await rm(new URL('app.css', output));
 await build({ ...options, entryPoints: ['src/login.jsx'], outfile: 'build/web/auth.js' });
 
 for (const name of [
-  'index.html', 'favicon.png', 'browser-storage.js', 'account-storage.js',
+  'index.html', 'favicon.png', 'favicon.svg', 'browser-storage.js', 'account-storage.js',
   'browser-hooks.js', 'auth-guard.js',
 ]) {
   await cp(new URL(`../web/${name}`, import.meta.url), new URL(name, output));

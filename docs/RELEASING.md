@@ -59,7 +59,7 @@ For the initial import, initialize a new Git repository in the reviewed `source/
 git init -b main
 git config user.name "YOUR_PUBLIC_AUTHOR_NAME"
 git config user.email "YOUR_GITHUB_NOREPLY_ADDRESS"
-git remote add origin https://github.com/YOUR_ACCOUNT/rhythm-web.git
+git remote add origin https://github.com/YOUR_ACCOUNT/Rhythm.git
 ```
 
 Replace `YOUR_ACCOUNT` with the owner-approved GitHub account or organization and replace both identity placeholders before committing. Copy the exact noreply address from your GitHub email settings; do not guess it or use a personal address accidentally. The local configuration applies only to this new repository.

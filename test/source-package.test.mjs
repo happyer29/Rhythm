@@ -58,7 +58,7 @@ test('source export uses an allowlist even for tracked personal or generated fil
   const { directory, root, put } = await fixture(t);
   const included = [
     '.gitignore', 'README.md', 'LICENSE', 'src/components/HabitCard.jsx', 'src/styles.css', 'web/index.html',
-    'web/favicon.png', 'worker/auth.mjs', 'db/schema.js',
+    'web/favicon.png', 'web/favicon.svg', 'worker/auth.mjs', 'db/schema.js',
     'drizzle/0000_init.sql', 'drizzle/meta/_journal.json',
     'drizzle/meta/0000_snapshot.json', 'scripts/build.sh', 'test/example.test.mjs',
     'assets/icon-256.png', 'deploy/hosting.example.json',

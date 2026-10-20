@@ -32,7 +32,7 @@ const extensionsByDirectory = {
   docs: /\.md$/,
 };
 const exactPaths = new Set([
-  'assets/icon-256.png', 'web/favicon.png', 'deploy/hosting.example.json',
+  'assets/icon-256.png', 'web/favicon.png', 'web/favicon.svg', 'deploy/hosting.example.json',
   '.github/PULL_REQUEST_TEMPLATE.md', '.github/pull_request_template.md',
   '.github/dependabot.yml', '.github/dependabot.yaml',
 ]);

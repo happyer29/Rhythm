@@ -1,6 +1,6 @@
 # Contributing
 
-Thank you for helping improve Rhythm Web. Keep changes focused and describe the user-visible problem, the resulting behavior, and how you verified it. Use English for repository documentation, issues, and pull requests; keep application text in the existing localization system.
+Thank you for helping improve Rhythm. Keep changes focused and describe the user-visible problem, the resulting behavior, and how you verified it. Use English for repository documentation, issues, and pull requests; keep application text in the existing localization system.
 
 ## Development setup
 

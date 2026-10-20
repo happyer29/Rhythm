@@ -51,5 +51,5 @@ test('built interfaces mount React and contain no legacy renderer artifacts', ()
   assert.match(loginHTML, /id="auth-root"/);
   assert.match(loginHTML, /src="\/auth\.js"/);
   assert.doesNotMatch(appHTML + loginHTML, /flutter|\.dart|canvaskit|skwasm/i);
-  assert.deepEqual(filesBelow(join(root, 'dist/client')), ['favicon.png']);
+  assert.deepEqual(filesBelow(join(root, 'dist/client')), ['favicon.png', 'favicon.svg']);
 });

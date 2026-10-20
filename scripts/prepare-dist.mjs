@@ -9,7 +9,8 @@ const requiredAssets = [
   'index.html', 'app.js', 'styles.css', 'browser-storage.js', 'account-storage.js',
   'browser-hooks.js', 'auth-guard.js',
 ];
-for (const name of [...requiredAssets, 'auth.js', 'login.html', 'favicon.png']) {
+const publicAssets = ['favicon.png', 'favicon.svg'];
+for (const name of [...requiredAssets, 'auth.js', 'login.html', ...publicAssets]) {
   if (!existsSync(`${source}/${name}`)) throw new Error(`Missing ${name}. Run npm run build first.`);
 }
 
@@ -28,22 +29,28 @@ for (const name of requiredAssets) {
     type: mime[name.split('.').at(-1)],
   };
 }
-// The only public asset is a generic icon. All application HTML, JavaScript,
+// Only generic icon formats are public. All application HTML, JavaScript,
 // and CSS must pass the Worker's session checks, including future build output.
-cpSync(`${source}/favicon.png`, `${target}/client/favicon.png`);
 const fingerprint = content => createHash('sha256').update(content).digest('hex').slice(0, 16);
-protectedAssets['/index.html'].body = protectedAssets['/index.html'].body.replace(
-  /(src|href)="(\/[^"?]+\.(?:js|css))"/g,
-  (match, attribute, path) => protectedAssets[path]
-    ? `${attribute}="${path}?v=${fingerprint(protectedAssets[path].body)}"`
+const assetVersions = Object.fromEntries(Object.entries(protectedAssets)
+  .map(([path, asset]) => [path, fingerprint(asset.body)]));
+for (const name of publicAssets) {
+  cpSync(`${source}/${name}`, `${target}/client/${name}`);
+  assetVersions[`/${name}`] = fingerprint(readFileSync(`${source}/${name}`));
+}
+const versionAssets = html => html.replace(
+  /(src|href)="(\/[^"?]+\.(?:js|css|png|svg))"/g,
+  (match, attribute, path) => assetVersions[path]
+    ? `${attribute}="${path}?v=${assetVersions[path]}"`
     : match,
 );
+protectedAssets['/index.html'].body = versionAssets(protectedAssets['/index.html'].body);
 for (const name of readdirSync(`${target}/client`)) {
-  if (name !== 'favicon.png') throw new Error(`Unexpected public asset: ${name}`);
+  if (!publicAssets.includes(name)) throw new Error(`Unexpected public asset: ${name}`);
 }
 const loginJS = readFileSync(`${source}/auth.js`, 'utf8');
-const loginHTML = readFileSync(`${source}/login.html`, 'utf8')
-  .replace('src="/auth.js"', `src="/auth.js?v=${fingerprint(loginJS)}"`);
+assetVersions['/auth.js'] = fingerprint(loginJS);
+const loginHTML = versionAssets(readFileSync(`${source}/login.html`, 'utf8'));
 writeFileSync(`${root}/worker/generated-assets.mjs`, [
   `export const protectedAssets = ${JSON.stringify(protectedAssets)};`,
   `export const loginHTML = ${JSON.stringify(loginHTML)};`,

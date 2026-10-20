@@ -13,7 +13,7 @@ const envelope = (json, revision) => ({formatVersion: 1, json, revision, updated
 
 function client(factory = new IDBFactory()) {
   const window = {indexedDB: factory, setTimeout, clearTimeout};
-  vm.runInNewContext(source, {window}, {filename: 'rhythm-web-browser-storage.js'});
+  vm.runInNewContext(source, {window}, {filename: 'rhythm-browser-storage.js'});
   return {api: window.rhythmStorage, window, factory};
 }
 function nativeOpen(factory, version = 1, upgrade) {

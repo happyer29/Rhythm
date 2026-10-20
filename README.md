@@ -1,6 +1,6 @@
-# Rhythm Web
+# Rhythm
 
-<img src="assets/icon-256.png" alt="Rhythm Web icon" width="80" height="80">
+<img src="assets/icon-256.png" alt="Rhythm icon" width="80" height="80">
 
 A habit journal built with React and JavaScript, a Cloudflare Worker, and D1. Track daily habits, record time by category, explore your history, and keep your journal with your account across browsers.
 
@@ -23,8 +23,8 @@ Install Node.js 24 or later and Git. The interface, application logic, build too
 Replace `YOUR_ACCOUNT` with the GitHub user or organization that hosts your copy of this repository:
 
 ```sh
-git clone https://github.com/YOUR_ACCOUNT/rhythm-web.git
-cd rhythm-web
+git clone https://github.com/YOUR_ACCOUNT/Rhythm.git
+cd Rhythm
 npm ci
 npm run build
 npm run dev
@@ -107,4 +107,4 @@ Platform-specific `.openai/hosting.json` configuration is optional for local bui
 
 ## License
 
-Rhythm Web is licensed under the [MIT License](LICENSE). Third-party dependencies retain their own licenses.
+Rhythm is licensed under the [MIT License](LICENSE). Third-party dependencies retain their own licenses.
