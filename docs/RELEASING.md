@@ -30,7 +30,7 @@ Searches and the preparation tool help find mistakes but do not replace reviewin
 
 ## Verify the clean source
 
-With Flutter 3.47.6 and Node.js 24 available:
+With Node.js 24 or later available:
 
 ```sh
 cd work/source-review/source

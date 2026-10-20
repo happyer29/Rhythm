@@ -186,7 +186,7 @@ test('invalid schema values cannot damage the current journal or its backup', as
   assert.deepEqual(stored(db), before);
 });
 
-test('validation matches Dart optional fields, UUID normalization, finite doubles and leap dates', () => {
+test('validation handles optional fields, UUID normalization, finite doubles and leap dates', () => {
   const value = journal();
   value.habits[0].id = id.toLowerCase();
   value.habits[0].targetNumber = 1.5;

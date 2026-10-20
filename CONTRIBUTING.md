@@ -4,7 +4,7 @@ Thank you for helping improve Rhythm Web. Keep changes focused and describe the 
 
 ## Development setup
 
-Follow [README.md](README.md) to install dependencies, build, and start the local preview. The project uses Flutter Web for the interface and a Cloudflare Worker with D1 for account storage. Local preview data persists between restarts.
+Follow [README.md](README.md) to install dependencies, build, and start the local preview. The project uses React and JavaScript for the interface and a Cloudflare Worker with D1 for account storage. Local preview data persists between restarts.
 
 Before submitting a change, run the checks relevant to it:
 
@@ -13,16 +13,16 @@ npm run build
 npm test
 ```
 
-The build runs Dart analysis and Flutter tests; `npm test` runs the Node.js suites. Build first when running Worker integration tests so they exercise current code. The [README](README.md#development) lists focused suites for iteration. Add regression tests for behavior changes, especially persistence, import validation, authentication, and concurrent saves. Use isolated test databases rather than your everyday journal.
+The build bundles the React interface and Worker; `npm test` runs the JavaScript suites. Build first when running Worker integration tests so they exercise current code. The [README](README.md#development) lists focused suites for iteration. Add regression tests for behavior changes, especially persistence, import validation, authentication, and concurrent saves. Use isolated test databases rather than your everyday journal.
 
-Use the existing code style and keep new user-facing strings in `lib/l10n.dart`. Preserve both supported interface languages. Avoid unrelated formatting or generated file changes.
+Use the existing JavaScript and React code style. Keep translated user-facing strings in the interface localization module and preserve the supported languages. Use semantic HTML, keyboard-accessible controls, and visible focus states. Avoid unrelated formatting or generated file changes.
 
 ## Data and privacy
 
 - Use synthetic habits, dates, entries, identities, and credentials in tests and examples. Do not copy a real journal into a fixture.
 - Keep local databases, exports, screenshots of personal journals, environment files, deployment identifiers, and credentials out of commits and pull-request attachments.
 - Review both the staged file list and diff before committing. Ignored files are a safeguard, not a substitute for review.
-- Preserve backward-compatible import behavior and avoid silent data loss. Model or serialization changes must be reflected in Dart validation, Worker validation, browser adapters, and relevant tests.
+- Preserve backward-compatible import behavior and avoid silent data loss. Model or serialization changes must be reflected in client validation, Worker validation, browser adapters, and relevant tests.
 - Follow [SECURITY.md](SECURITY.md) for vulnerability reports; do not publish sensitive details in an issue.
 
 ## Pull requests

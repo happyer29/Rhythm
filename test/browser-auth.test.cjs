@@ -63,11 +63,19 @@ function browser({initial = 'authenticated', sessionLifetime = 300000} = {}) {
         registeredTools.push({definition, signal:options.signal});
       },
     },
-    body:{appendChild() {}},
+    body:{children:[], appendChild(element) { this.children.push(element); }},
     createElement(tag) {
+      const listeners = new Map();
       const element = {tag, style:{}, clicks:0, removed:false, children:[], attributes:{},
-        click() { this.clicks++; }, remove() { this.removed = true; },
+        click() { this.clicks++; },
+        remove() { this.removed = true; this.open = false; document.body.children = document.body.children.filter(child => child !== this); },
         setAttribute(key, value) { this.attributes[key] = value; },
+        getAttribute(key) { return this.attributes[key] ?? null; },
+        removeAttribute(key) { delete this.attributes[key]; },
+        addEventListener(name, callback) { addListener(listeners, name, callback); },
+        dispatch(name, event) { dispatch(listeners, name, event); },
+        showModal() { this.open = true; this.modal = true; },
+        contains(target) { return target === this || this.children.some(child => child.contains?.(target)); },
         append(...children) { this.children.push(...children); }, focus() { this.focused = true; }};
       elements.push(element);
       return element;
@@ -138,7 +146,7 @@ function browser({initial = 'authenticated', sessionLifetime = 300000} = {}) {
     get detachCount() { return detachCount; },
     get now() { return now; },
     get expiresAt() { return initialExpiresAt; },
-    get overlay() { return elements.find(element => element.tag === 'section' && !element.removed); },
+    get overlay() { return elements.find(element => element.attributes.role === 'alertdialog' && !element.removed); },
     advance(milliseconds) { now += milliseconds; },
     dispatchWindow(name, event) { dispatch(windowListeners, name, event); },
     dispatchDocument(name, event) { dispatch(documentListeners, name, event); },
@@ -498,6 +506,44 @@ test('successful reauthentication restores the same draft but never revives revo
   await assert.rejects(oldTool.definition.execute({}), AUTH_ERROR);
   const newTool = page.registeredTools.filter(item => item.definition.name === 'read_journal').at(-1);
   assert.deepEqual(JSON.parse(JSON.stringify(await newTool.definition.execute({}))), draft);
+});
+
+test('session lock covers an open editor and restores its accessibility state after reauthentication', async () => {
+  const page = browser();
+  await page.window.rhythmAuth.ready;
+  const app = page.document.createElement('div');
+  app.inert = false;
+  const editor = page.document.createElement('dialog');
+  editor.inert = false;
+  editor.setAttribute('aria-hidden', 'false');
+  editor.showModal();
+  page.document.body.appendChild(app);
+  page.document.body.appendChild(editor);
+  page.window.rhythmBrowser.setUnsaved(true);
+
+  page.sessionReplies.push({httpStatus:401});
+  await assert.rejects(page.window.rhythmAuth.check(), AUTH_ERROR);
+  const overlay = page.overlay;
+  assert.equal(overlay.tag, 'dialog');
+  assert.equal(overlay.modal, true);
+  assert.equal(overlay.open, true);
+  assert.equal(editor.open, true, 'retain the open editor and its draft');
+  for (const element of [app, editor]) {
+    assert.equal(element.inert, true);
+    assert.equal(element.getAttribute('aria-hidden'), 'true');
+  }
+  let prevented = false;
+  overlay.dispatch('cancel', {preventDefault() { prevented = true; }});
+  assert.equal(prevented, true, 'Escape must not dismiss the session lock');
+
+  await page.window.rhythmAuth.check();
+  assert.equal(page.overlay, undefined);
+  assert.equal(app.inert, false);
+  assert.equal(app.getAttribute('aria-hidden'), null);
+  assert.equal(editor.inert, false);
+  assert.equal(editor.getAttribute('aria-hidden'), 'false');
+  assert.equal(editor.open, true);
+  assert.equal(page.window.rhythmBrowser.hasUnsaved(), true);
 });
 
 test('an import already reading a file cannot hand its JSON to the app after session expiry', async () => {

@@ -34,7 +34,7 @@ body:
         Browser:
         Operating system:
         Local or hosted:
-        Flutter / Node.js versions, if relevant:
+        Node.js version, if relevant:
     validations:
       required: true
   - type: textarea

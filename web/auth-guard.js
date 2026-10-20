@@ -15,17 +15,22 @@
     locked = true; conceal();
     window.rhythmBrowser?.suspend();
     if (overlay) return;
-    overlay = document.createElement('section');
+    // A top-layer dialog stays operable even when an editor already has a
+    // native modal open underneath. Keep that editor mounted with its draft.
+    overlay = document.createElement('dialog');
     overlay.setAttribute('role','alertdialog');
     overlay.setAttribute('aria-modal','true');
     overlay.setAttribute('aria-label',chinese() ? '日记已锁定' : 'Journal locked');
-    overlay.style.cssText = 'visibility:visible;position:fixed;inset:0;z-index:2147483647;background:#0b0c0e;color:#eee;font:16px system-ui;display:grid;place-content:center;text-align:center;padding:28px;gap:18px';
+    overlay.style.cssText = 'visibility:visible;position:fixed;inset:0;margin:0;width:100vw;height:100dvh;max-width:none;max-height:none;border:0;box-sizing:border-box;z-index:2147483647;background:#f7f8f4;color:#243b32;font:16px system-ui;display:grid;place-content:center;text-align:center;padding:28px;gap:18px';
     const title = document.createElement('h1'); title.textContent = chinese() ? '日记已锁定' : 'Journal locked';
     const info = document.createElement('p'); info.textContent = chinese() ? '请重新验证访问权限。未保存的更改仍保留在此标签页中，请勿关闭。' : 'Verify access to continue. Unsaved changes remain in this tab; keep it open.';
-    const login = document.createElement('a'); login.href='/auth'; login.target='_blank'; login.rel='noopener'; login.textContent=chinese() ? '在新标签页登录' : 'Sign in in a new tab'; login.style.color='#ff837b';
-    const retry = document.createElement('button'); retry.textContent=chinese() ? '重新验证访问权限' : 'Check access again'; retry.style.cssText='padding:14px;background:#ef5045;color:white;border:0;border-radius:8px;font:inherit;cursor:pointer';
+    const login = document.createElement('a'); login.href='/auth'; login.target='_blank'; login.rel='noopener'; login.textContent=chinese() ? '在新标签页登录' : 'Sign in in a new tab'; login.style.color='#247866';
+    const retry = document.createElement('button'); retry.textContent=chinese() ? '重新验证访问权限' : 'Check access again'; retry.style.cssText='padding:14px;background:#247866;color:white;border:0;border-radius:8px;font:inherit;cursor:pointer';
     retry.onclick=()=>check().catch(()=>{});
-    overlay.append(title,info,login,retry); document.body.appendChild(overlay); retry.focus();
+    overlay.append(title,info,login,retry); document.body.appendChild(overlay);
+    overlay.addEventListener?.('cancel',event=>event.preventDefault());
+    overlay.showModal?.();
+    retry.focus();
     for (const element of Array.from(document.body.children ?? [])) {
       if (element === overlay) continue;
       concealedElements.set(element,{inert:element.inert,aria:element.getAttribute('aria-hidden')});

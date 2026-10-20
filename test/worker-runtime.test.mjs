@@ -11,11 +11,15 @@ test('deployed bundle runs setup, login, CSRF and revocation in actual workerd/D
     assert.equal(setup.status,200,await setup.clone().text());
     const cookie=setup.headers.get('set-cookie'); assert.match(cookie,/HttpOnly/);
     const signedHeaders={...headers,Cookie:cookie};
-    assert.equal((await runtime.dispatchFetch(origin+'/main.dart.js',{headers})).status,401);
-    assert.equal((await runtime.dispatchFetch(origin+'/main.dart.js',{headers:signedHeaders})).status,200);
+    assert.equal((await runtime.dispatchFetch(origin+'/app.js',{headers})).status,401);
+    assert.equal((await runtime.dispatchFetch(origin+'/app.js',{headers:signedHeaders})).status,200);
+    assert.equal((await runtime.dispatchFetch(origin+'/styles.css',{headers})).status,401);
+    const stylesheet = await runtime.dispatchFetch(origin+'/styles.css',{headers:signedHeaders});
+    assert.equal(stylesheet.status,200);
+    assert.match(stylesheet.headers.get('content-type'),/^text\/css/);
     assert.equal((await runtime.dispatchFetch(origin+'/api/auth/logout',{method:'POST',headers:{...signedHeaders,Origin:'https://evil.test'},body:'{}'})).status,403);
     assert.equal((await runtime.dispatchFetch(origin+'/api/auth/logout',{method:'POST',headers:signedHeaders,body:'{}'})).status,200);
-    assert.equal((await runtime.dispatchFetch(origin+'/main.dart.js',{headers:signedHeaders})).status,401);
+    assert.equal((await runtime.dispatchFetch(origin+'/app.js',{headers:signedHeaders})).status,401);
     const login=await runtime.dispatchFetch(origin+'/api/auth/login',{method:'POST',headers,body:JSON.stringify(credentials)});
     assert.equal(login.status,200,await login.clone().text());
     assert.equal((await db.prepare('SELECT COUNT(*) n FROM admin').first()).n,1);

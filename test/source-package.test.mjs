@@ -22,7 +22,7 @@ async function fixture(t) {
     await writeFile(join(root, path), contents);
   }
   await put('package.json', '{"name":"synthetic-package"}\n');
-  await put('pubspec.yaml', 'name: synthetic_package\n');
+  await put('src/main.jsx', 'export default function App() {}\n');
   return { directory, root, put };
 }
 
@@ -57,8 +57,8 @@ async function verifyManifest(destination) {
 test('source export uses an allowlist even for tracked personal or generated files', async t => {
   const { directory, root, put } = await fixture(t);
   const included = [
-    '.gitignore', 'README.md', 'LICENSE', 'lib/main.dart', 'web/index.html',
-    'web/favicon.png', 'worker/auth.mjs', 'db/schema.ts',
+    '.gitignore', 'README.md', 'LICENSE', 'src/components/HabitCard.jsx', 'src/styles.css', 'web/index.html',
+    'web/favicon.png', 'worker/auth.mjs', 'db/schema.js',
     'drizzle/0000_init.sql', 'drizzle/meta/_journal.json',
     'drizzle/meta/0000_snapshot.json', 'scripts/build.sh', 'test/example.test.mjs',
     'assets/icon-256.png', 'deploy/hosting.example.json',
@@ -69,14 +69,14 @@ test('source export uses an allowlist even for tracked personal or generated fil
     '.openai/hosting.json', '.rhythm-data/local.sqlite',
     'work/export.json', 'artifacts/screenshot.png', 'screenshots/private.png',
     'exports/habits.json', 'backups/journal.json', '.env', '.env.example',
-    '.dev.vars', 'node_modules/private.js', 'build/web/main.dart.js',
+    '.dev.vars', 'node_modules/private.js', 'build/web/app.js',
     'dist/server/index.js', 'worker/generated-assets.mjs', 'private.json',
     'web/records.json', 'assets/screenshot.png', 'deploy/hosting.json',
-    'test/private.json', 'test/backups/private.mjs', 'lib/.private.dart',
+    'test/private.json', 'test/backups/private.mjs', 'src/.private.js',
     'docs/exports/private.md', '.github/workflows/.private.yml',
     'drizzle/meta/private.json', 'drizzle/journal-export.sql',
     'drizzle/dump.sql', 'drizzle/0002.sql',
-    'db/account.sqlite', 'test/journal.sqlite3', 'lib/account.db',
+    'db/account.sqlite', 'test/journal.sqlite3', 'src/account.db',
     'worker/account.sqlite-wal', 'web/journal.json',
     'docs/journal.csv', 'test/journal.tsv', 'scripts/account.sql',
   ];
@@ -88,7 +88,7 @@ test('source export uses an allowlist even for tracked personal or generated fil
   assert.ok(excluded.every(path => tracked.includes(path)));
   const result = await prepareSource({ root, output: join(directory, 'review') });
   const manifest = await verifyManifest(result.destination);
-  assert.deepEqual(manifest.files.map(file => file.path), [...included, 'package.json', 'pubspec.yaml'].sort());
+  assert.deepEqual(manifest.files.map(file => file.path), [...included, 'package.json', 'src/main.jsx'].sort());
   assert.equal(result.fileCount, included.length + 2);
   for (const file of manifest.files) {
     assert.equal((await readFile(join(result.destination, 'source', file.path), 'utf8')).includes('SYNTHETIC_PRIVATE_MARKER'), false);
@@ -114,7 +114,7 @@ test('existing output is never overwritten and source directories cannot receive
   await writeFile(join(existing, 'keep.txt'), 'unchanged');
   await assert.rejects(prepareSource({ root, output: existing }), /already exists/);
   assert.equal(await readFile(join(existing, 'keep.txt'), 'utf8'), 'unchanged');
-  for (const output of ['.', 'lib/review', 'web/review', 'docs/review', '.github/review', 'scripts/review', 'README.md/review']) {
+  for (const output of ['.', 'src/review', 'web/review', 'docs/review', '.github/review', 'scripts/review', 'README.md/review']) {
     await assert.rejects(prepareSource({ root, output }), /outside the source directories/);
   }
   for (const output of ['.git/review', '.rhythm-data/review', 'build/review', 'node_modules/review']) {
@@ -132,7 +132,7 @@ test('traversal paths and root/ancestor destinations are rejected', async t => {
     await assert.rejects(prepareSource({ root, output }), /without traversal components/);
   }
   await assert.rejects(prepareSource({ root, output: directory }), /outside the source directories/);
-  for (const path of ['../lib/private.dart', '/lib/main.dart', 'lib/../main.dart', 'lib\\main.dart', 'lib//main.dart']) {
+  for (const path of ['../src/private.js', '/src/main.jsx', 'src/../main.jsx', 'src\\main.jsx', 'src//main.jsx']) {
     assert.equal(isSourcePath(path), false);
   }
 });
@@ -140,12 +140,12 @@ test('traversal paths and root/ancestor destinations are rejected', async t => {
 test('source file and directory symlinks are rejected without copying their targets', async t => {
   for (const directoryLink of [false, true]) {
     const { directory, root, put } = await fixture(t);
-    await put('lib/main.dart');
+    await put('src/main.jsx');
     const secret = join(directory, 'private');
     await mkdir(secret);
-    await writeFile(join(secret, 'private.dart'), 'SYNTHETIC_PRIVATE_MARKER');
-    await symlink(directoryLink ? secret : join(secret, 'private.dart'),
-      join(root, directoryLink ? 'lib/linked' : 'lib/link.dart'));
+    await writeFile(join(secret, 'private.js'), 'SYNTHETIC_PRIVATE_MARKER');
+    await symlink(directoryLink ? secret : join(secret, 'private.js'),
+      join(root, directoryLink ? 'src/linked' : 'src/link.js'));
     const output = join(directory, 'review');
     await assert.rejects(prepareSource({ root, output }), /symbolic links/);
     await assert.rejects(lstat(output), { code: 'ENOENT' });
@@ -179,8 +179,8 @@ test('current working source exports without Git history or runtime data and mat
   const manifest = await verifyManifest(result.destination);
   const paths = manifest.files.map(file => file.path);
   for (const required of [
-    'README.md', 'LICENSE', 'package-lock.json', 'pubspec.lock',
-    'lib/main.dart', 'worker/journal.mjs', 'scripts/prepare-source.mjs',
+    'README.md', 'LICENSE', 'package-lock.json', 'drizzle.config.js',
+    'src/main.jsx', 'src/styles.css', 'worker/journal.mjs', 'scripts/prepare-source.mjs',
     'test/source-package.test.mjs', 'docs/RELEASING.md',
     '.github/workflows/ci.yml', '.github/pull_request_template.md',
     '.github/ISSUE_TEMPLATE/bug_report.yml',

@@ -6,7 +6,7 @@ import { pathToFileURL } from 'node:url';
 import { createRuntime } from '../test/worker-runtime.mjs';
 
 const owner = 'local-development-owner';
-const types = {'.wasm':'application/wasm','.js':'text/javascript','.json':'application/json','.otf':'font/otf','.ttf':'font/ttf','.png':'image/png','.bin':'application/octet-stream'};
+const types = {'.js':'text/javascript','.css':'text/css','.json':'application/json','.png':'image/png','.svg':'image/svg+xml','.ico':'image/x-icon'};
 
 function readBody(request, limit) {
   return new Promise((resolveBody, reject) => {

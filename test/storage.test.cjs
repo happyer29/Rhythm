@@ -158,7 +158,7 @@ test('corrupt JSON retains its observed revision and exact bytes on explicit res
   const loaded = await item.api.read();
   assert.equal(loaded.json, corrupt);
   assert.equal(loaded.revision, 4);
-  assert.throws(() => JSON.parse(loaded.json)); // The Dart decoder owns this error.
+  assert.throws(() => JSON.parse(loaded.json)); // The journal decoder owns this error.
   assert.equal(await item.api.write(journal('user restored valid JSON'), 4), 5);
   assert.equal((await item.api.readBackup()).json, corrupt);
   assert.equal((await item.api.readBackup()).revision, 4);

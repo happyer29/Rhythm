@@ -368,7 +368,7 @@ test('raw payload bytes including 64-bit spellings survive account reads, writes
   assert.equal((await item.api.read()).json, exact);
   await item.api.write(EMPTY, 1);
   assert.equal((await item.api.readBackup()).json, exact);
-  // The Dart decoder owns existing payload validation and needs the revision
+  // The journal decoder owns existing payload validation and needs the revision
   // to allow explicit restoration while the server keeps the corrupt backup.
   remote.current = {json: '{corrupt', revision: 3, initialized: true};
   assert.equal((await item.api.read()).json, '{corrupt');

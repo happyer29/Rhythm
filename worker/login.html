@@ -1,13 +1,16 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b0c0e"><title>Rhythm — Sign in</title>
-<style>
-*{box-sizing:border-box}body{margin:0;background:#0b0c0e;color:#f2f1ed;font:15px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100svh;display:flex;flex-direction:column}header{display:flex;justify-content:space-between;align-items:center;padding:28px 7vw;border-bottom:1px solid #27282b}.brand{letter-spacing:.22em;font-size:15px;font-weight:800}.brand i{display:inline-block;width:9px;height:9px;background:#ff5045;margin-right:10px;border-radius:50%}select{color:#bfc1c8;background:#151619;border:1px solid #33353b;border-radius:7px;padding:8px 10px}main{flex:1;display:grid;place-content:center;padding:44px 24px}.card{width:min(400px,100%)}.eyebrow{font-size:11px;letter-spacing:.18em;color:#ff6459;font-weight:700}h1{font-size:42px;letter-spacing:-.055em;margin:18px 0 12px;line-height:1.1}p{color:#9b9da6;line-height:1.65;margin:0 0 28px}.field{display:block;margin:18px 0 8px;color:#e0e0e3;font-size:13px}input[type=text],input[type=password]{width:100%;background:#17181c;color:#fff;border:1px solid #35363d;border-radius:8px;padding:14px;font:inherit;outline:none}input:focus{border-color:#ff6459;box-shadow:0 0 0 3px #ff645918}.remember{display:flex;gap:10px;align-items:center;margin:22px 0;font-size:13px;color:#c0c1c7;cursor:pointer}input[type=checkbox]{accent-color:#f35347;width:17px;height:17px}.submit{width:100%;padding:15px 20px;color:#fff;background:#f04c40;border:0;border-radius:8px;font:600 15px inherit;cursor:pointer}.submit:hover{background:#ff5b50}.submit:disabled{opacity:.55;cursor:wait}.hint{font-size:12px;margin-top:9px;line-height:1.5}.error{color:#ff9b93;font-size:13px;min-height:20px;margin:16px 0 0}.note{margin:30px 0 0;padding-top:22px;border-top:1px solid #27282b;font-size:12px}.footer{font-size:11px;color:#686a74;text-align:center;padding:24px}a{color:#ff837b}button:focus-visible,select:focus-visible{outline:2px solid #ff837b;outline-offset:4px}[hidden]{display:none!important}
-</style><script src="/auth.js" defer></script></head><body>
-<header><span class="brand"><i></i>RHYTHM</span><select id="language" aria-label="Language"><option value="en">English</option><option value="zh">简体中文</option></select></header>
-<main><div class="card"><div class="eyebrow" data-text="private">PRIVATE JOURNAL</div><h1 id="heading">Welcome back.</h1><p id="intro">Sign in to open your daily journal.</p>
-<form id="form"><label class="field" for="username" data-text="username">Admin username</label><input id="username" name="username" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" pattern="[a-zA-Z0-9_.-]{3,64}" minlength="3" maxlength="64" required>
-<label class="field" for="password" data-text="password">Password</label><input id="password" name="password" type="password" autocomplete="current-password" maxlength="128" required>
-<div id="setup-fields" hidden><p class="hint" data-text="hint">Use a unique passphrase of 15–128 characters. Username: 3–64 letters, digits, dots, dashes or underscores.</p><label class="field" for="confirm" data-text="confirm">Confirm password</label><input id="confirm" type="password" autocomplete="new-password" maxlength="128"></div>
-<label class="remember"><input id="remember" type="checkbox" checked><span data-text="remember">Remember me for 30 days</span></label><button class="submit" id="submit" type="submit" disabled>Sign in</button><p id="error" class="error" role="alert" aria-live="polite"></p></form>
-<p class="note" data-text="note">Your habits are saved to your account. Sign in from another browser to open the same journal.</p></div></main><div class="footer" data-text="footer">One day at a time. A space that's yours.</div>
-</body></html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#0b0c0e">
+    <title>Rhythm — Sign in</title>
+    <link rel="icon" href="/favicon.png" type="image/png">
+    <!-- LOGIN_STYLES -->
+    <script src="/auth.js" defer></script>
+  </head>
+  <body>
+    <div id="auth-root"><p>Opening secure sign in…</p></div>
+    <noscript>Rhythm needs JavaScript to sign in to your account.</noscript>
+  </body>
+</html>

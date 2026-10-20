@@ -11,25 +11,24 @@ const rootFiles = new Set([
   '.editorconfig', '.gitattributes', '.gitignore',
   'README.md', 'CONTRIBUTING.md', 'SECURITY.md', 'CODE_OF_CONDUCT.md',
   'CHANGELOG.md', 'LICENSE', 'NOTICE',
-  'analysis_options.yaml', 'pubspec.yaml', 'pubspec.lock',
-  'package.json', 'package-lock.json', 'drizzle.config.ts',
+  'package.json', 'package-lock.json', 'drizzle.config.js',
 ]);
 const sourceDirectories = new Set([
-  'lib', 'web', 'worker', 'db', 'drizzle', 'scripts', 'test',
+  'src', 'web', 'worker', 'db', 'drizzle', 'scripts', 'test',
   'assets', 'deploy', 'docs', '.github',
 ]);
 const excludedDirectories = new Set([
-  '.git', '.openai', '.rhythm-data', '.dart_tool', '.wrangler', '.sites-runtime',
+  '.git', '.openai', '.rhythm-data', '.wrangler', '.sites-runtime',
   '.codex', '.agents', '.idea', 'node_modules', 'work', 'artifacts',
   'screenshots', 'exports', 'backups', 'build', 'dist', 'coverage',
 ]);
 const extensionsByDirectory = {
-  lib: /\.dart$/,
+  src: /\.(?:js|jsx|css)$/,
   web: /\.(?:js|html|css)$/,
   worker: /\.(?:mjs|js|html|css)$/,
-  db: /\.ts$/,
+  db: /\.js$/,
   scripts: /\.(?:mjs|js|cjs|sh)$/,
-  test: /\.(?:dart|mjs|js|cjs)$/,
+  test: /\.(?:mjs|js|cjs)$/,
   docs: /\.md$/,
 };
 const exactPaths = new Set([
@@ -139,8 +138,8 @@ export async function prepareSource({ root = projectRoot, output = 'work/source-
   await inspectOutputPath(destination);
   const files = await collectFiles(root);
   if (!files.some(file => file.path === 'package.json') ||
-      !files.some(file => file.path === 'pubspec.yaml')) {
-    throw new Error('The source root must contain package.json and pubspec.yaml.');
+      !files.some(file => file.path === 'src/main.jsx')) {
+    throw new Error('The source root must contain package.json and src/main.jsx.');
   }
   // Validate the entire source before creating output. mkdir without recursive
   // on the destination also protects against accidentally replacing a review.

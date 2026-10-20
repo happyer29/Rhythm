@@ -1,6 +1,4 @@
 # Tooling and generated output
-.dart_tool/
-.flutter-plugins-dependencies
 .idea/
 *.iml
 .DS_Store

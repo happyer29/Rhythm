@@ -2,7 +2,8 @@
   "name": "rhythm-web",
   "version": "2.0.0",
   "private": true,
-  "description": "A self-hosted habit journal built with Flutter Web and Cloudflare Workers.",
+  "description": "A self-hosted habit journal built with React, JavaScript, and Cloudflare Workers.",
+  "type": "module",
   "license": "MIT",
   "engines": {
     "node": ">=24"
@@ -11,7 +12,7 @@
     "test": "node --test test/*.test.cjs test/*.test.mjs",
     "prepare:source": "node scripts/prepare-source.mjs",
     "test:storage": "node --test test/storage.test.cjs",
-    "build": "bash scripts/build-web.sh",
+    "build": "node scripts/build.mjs",
     "test:auth": "node --test test/auth.test.mjs test/browser-auth.test.cjs",
     "build:server": "node scripts/prepare-dist.mjs",
     "dev": "node scripts/serve-local.mjs",
@@ -20,18 +21,20 @@
     "test:account": "node --test test/account-storage.test.cjs test/journal-api.test.mjs test/journal-api-runtime.test.mjs test/local-persistence.test.mjs"
   },
   "devDependencies": {
-    "fake-indexeddb": "6.2.5",
-    "esbuild": "0.28.2",
-    "drizzle-orm": "0.45.3",
     "drizzle-kit": "0.31.11",
+    "drizzle-orm": "0.45.3",
+    "esbuild": "0.28.2",
+    "fake-indexeddb": "6.2.5",
     "miniflare": "4.20260730.0"
   },
   "dependencies": {
-    "@noble/hashes": "2.4.0"
+    "@noble/hashes": "2.4.0",
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
   },
   "overrides": {
     "esbuild": "$esbuild",
     "undici": "7.29.1",
-    "sharp": "0.35.4"
+    "sharp": "0.35.5"
   }
 }

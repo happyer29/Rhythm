@@ -2,7 +2,7 @@
  * The account journal is authoritative. IndexedDB is read only to migrate an
  * existing journal into an account that has never had a saved snapshot. Local
  * records are retained; they are never used as an offline fallback.
- * Loading this script performs no I/O. The Dart repository serializes writes.
+ * Loading this script performs no I/O. The journal store serializes writes.
  */
 (function installAccountStorage(root) {
   'use strict';
@@ -59,7 +59,7 @@
         }
       }
     }
-    // Retain the exact bytes, including JSON number spellings. Dart validates
+    // Retain the exact bytes, including JSON number spellings. The journal validator checks
     // existing payloads after retaining their revision for explicit recovery.
     return value;
   }

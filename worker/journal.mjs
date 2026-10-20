@@ -22,14 +22,14 @@ function validDay(value) {
 }
 
 // JSON.parse rounds numbers before schema validation. Check the original tokens
-// for the same integer fields/depth bound as Dart's integer_preflight.dart,
+// for the same integer fields/depth bound as the shared journal model,
 // including escaped property names and integer fields inside extension objects.
 function validateIntegerTokens(source, fields = integerFields) {
   let depth = 0;
   for (let i = 0; i < source.length; i++) {
     const character = source[i];
     if (character === '{' || character === '[') {
-      // Dart counts value depth: a container at depth 256 can be empty.
+      // The schema counts value depth: a container at depth 256 can be empty.
       if (depth > 256) invalid();
       depth++;
     } else if (character === '}' || character === ']') {

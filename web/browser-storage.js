@@ -11,7 +11,7 @@
  *   unavailable | corrupt | quota | conflict | invalid
  * A conflict also contains .expectedRevision and .actualRevision.
  *
- * The Dart repository remains responsible for full habit/entry validation.
+ * The journal store remains responsible for full habit/entry validation.
  * This adapter validates new JSON/schema shape and its storage envelope, and
  * preserves the exact supplied JSON text (including 64-bit number spellings).
  *
@@ -76,7 +76,7 @@
         !Number.isFinite(Date.parse(value.updatedAt))) {
       throw new StorageFailure('corrupt', 'The stored journal revision is invalid.');
     }
-    // Payload corruption is reported by the Dart decoder after it retains the
+    // Payload corruption is reported by the journal decoder after it retains the
     // observed revision. An explicit user import may then CAS-replace the raw
     // corrupt payload and preserve those exact bytes in PREVIOUS.
     if (typeof value.json !== 'string') {

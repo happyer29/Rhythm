@@ -23,7 +23,7 @@ Authentication POSTs and journal PUTs require an exact same-origin `Origin`, JSO
 
 ## Application access
 
-App HTML and root scripts, including `main.dart.js`, are embedded in the Worker and require a server-verified session. Public static output contains generic renderer, font, and icon assets. Content-hashed script URLs prevent old static-release caches from retaining obsolete startup guards. Worker responses use `private, no-store`, CSP, `nosniff`, `no-referrer`, and framing restrictions. No offline application cache is installed.
+App HTML, JavaScript, and CSS, including `app.js` and `styles.css`, are embedded in the Worker and require a server-verified session. Public static output contains only a generic favicon. The React sign-in interface is served to gateway-authenticated visitors before they create an app session. Content-hashed asset URLs prevent old browser caches from retaining obsolete startup guards. Worker responses use `private, no-store`, CSP, `nosniff`, `no-referrer`, and framing restrictions. No offline application cache is installed.
 
 The browser revalidates access on load, focus, visibility restoration, and periodically. Absolute expiry has an independent timer, and session checks time out. Expiry or network failure locks a loaded page while retaining its unsaved draft in memory. Reauthentication in another tab can resume that draft. Explicit logout is blocked while changes remain unsaved. Cross-tab logout uses `BroadcastChannel` with a storage-event fallback. WebMCP callbacks check the server before execution and before returning data; callbacks from a locked session are invalidated.
 
@@ -31,7 +31,7 @@ The browser revalidates access on load, focus, visibility restoration, and perio
 
 The server stores a journal under the authenticated administrator and its platform identity. Journal reads, writes, and previous-version reads require a valid session; clients cannot supply a different account ID. A conditional SQL write preserves the previous JSON and advances a revision atomically. Stale revisions are rejected, including across browsers.
 
-Server validation mirrors the Dart schema. A 900,000-byte UTF-8 journal limit bounds the combined current and previous payloads. Schema version 2 preserves ordered duration sessions, including repeated category labels. Session sums cannot exceed the daily total, and categories must belong to the habit. Version 1 is accepted without session fields and upgraded by the app. Exporting version 2 prevents old clients from silently discarding session data. Archiving a habit changes its visibility; it does not erase its history.
+The React client and Worker validate the same journal schema. A 900,000-byte UTF-8 journal limit bounds the combined current and previous payloads. Schema version 2 preserves ordered duration sessions, including repeated category labels. Session sums cannot exceed the daily total, and categories must belong to the habit. Version 1 is accepted without session fields and upgraded by the app. Exporting version 2 prevents old clients from silently discarding session data. Archiving a habit changes its visibility; it does not erase its history.
 
 Legacy IndexedDB migration requires an empty account journal and expected revision zero. If another client saves first, the existing server journal is loaded instead of overwritten. Once the server has a journal, older browser copies never replace it automatically. Network and authentication failures do not present local data as successfully saved.
 

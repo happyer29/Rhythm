@@ -32,8 +32,8 @@ test('password KDF agrees with native scrypt vector at production parameters',()
 });
 test('anonymous identity, forged cookies and direct app routes cannot read app code',async () => {
   const db = testDB();
-  for (const path of ['/','/auth','/api/auth/session','/main.dart.js','/index.html']) assert.equal((await send(db,path,{owner:null})).status,403);
-  for (const path of ['/main.dart.js','/browser-storage.js','/browser-hooks.js','/flutter_bootstrap.js','/auth-guard.js','/%69ndex.html','/app/index.html']) {
+  for (const path of ['/','/auth','/auth.js','/api/auth/session','/app.js','/styles.css','/index.html']) assert.equal((await send(db,path,{owner:null})).status,403);
+  for (const path of ['/app.js','/browser-storage.js','/account-storage.js','/browser-hooks.js','/styles.css','/auth-guard.js','/%69ndex.html','/app/index.html']) {
     const result = await send(db,path,{cookie:'__Host-rhythm='+'a'.repeat(64)});
     assert.equal(result.status,401,path);
     assert.equal(result.headers.get('cache-control'),'private, no-store');
@@ -49,7 +49,7 @@ test('one-time setup, safe storage and remembered session, identity-bound',async
   assert.equal(session.token_hash,await digest(cookie.split(';')[0].split('=')[1]));
   assert.ok(session.expires_at > Date.now() + (REMEMBER_SECONDS-10)*1000);
   assert.equal((await send(db,'/',{cookie})).status,200);
-  assert.equal((await send(db,'/main.dart.js',{cookie,owner:'other-user'})).status,401);
+  assert.equal((await send(db,'/app.js',{cookie,owner:'other-user'})).status,401);
   const sessionJSON = await (await send(db,'/api/auth/session',{cookie})).json();
   assert.deepEqual(Object.keys(sessionJSON).sort(),['authenticated','expiresAt']);
   assert.equal((await send(db,'/api/auth/setup',{method:'POST',body:credentials})).status,409);
@@ -89,18 +89,18 @@ test('login failures are generic, rotated sessions revoke previous token',async 
   const cookie = login.headers.get('set-cookie');
   assert.equal(login.status,200); assert.doesNotMatch(cookie,/Max-Age|Expires/);
   assert.notEqual(cookie.split(';')[0],oldCookie.split(';')[0]);
-  assert.equal((await send(db,'/main.dart.js',{cookie:oldCookie})).status,401);
+  assert.equal((await send(db,'/app.js',{cookie:oldCookie})).status,401);
   assert.ok(db.sqlite.prepare('SELECT expires_at FROM sessions').get().expires_at <= Date.now()+SESSION_SECONDS*1000);
 });
 test('logout revokes server session, expiration and duplicate cookies rejected',async () => {
   const db = testDB(); const cookie = await setup(db);
-  assert.equal((await send(db,'/main.dart.js',{cookie:cookie.split(';')[0]+'; '+cookie.split(';')[0]})).status,401);
+  assert.equal((await send(db,'/app.js',{cookie:cookie.split(';')[0]+'; '+cookie.split(';')[0]})).status,401);
   const logout = await send(db,'/api/auth/logout',{method:'POST',body:{},cookie});
   assert.match(logout.headers.get('set-cookie'),/Max-Age=0/);
-  assert.equal((await send(db,'/main.dart.js',{cookie})).status,401);
+  assert.equal((await send(db,'/app.js',{cookie})).status,401);
   const login = await send(db,'/api/auth/login',{method:'POST',body:credentials});
   db.sqlite.exec('UPDATE sessions SET expires_at = 0');
-  assert.equal((await send(db,'/main.dart.js',{cookie:login.headers.get('set-cookie')})).status,401);
+  assert.equal((await send(db,'/app.js',{cookie:login.headers.get('set-cookie')})).status,401);
 });
 test('rate limiter is atomic across concurrent attempts and resets after 15 minutes',async () => {
   const db = testDB(); const now=Date.now();
@@ -112,7 +112,7 @@ test('rate limiter is atomic across concurrent attempts and resets after 15 minu
   assert.equal(response.status,429); assert.ok(Number(response.headers.get('retry-after'))>0);
 });
 test('DB outages deny access without leaking exception details',async () => {
-  const result=await worker.fetch(request('/main.dart.js'),{});
+  const result=await worker.fetch(request('/app.js'),{});
   assert.equal(result.status,503); assert.deepEqual(await result.json(),{error:'AUTH_UNAVAILABLE'});
 });
 test('CSP and safe response headers on login, errors and protected page',async () => {
@@ -120,18 +120,18 @@ test('CSP and safe response headers on login, errors and protected page',async (
   for (const path of ['/auth','/','/missing']) {
     const result=await send(db,path,{cookie});
     assert.match(result.headers.get('content-security-policy'),/frame-ancestors 'none'/);
-    assert.match(result.headers.get('content-security-policy'),/script-src 'self' 'wasm-unsafe-eval';/);
+    assert.match(result.headers.get('content-security-policy'),/script-src 'self';/);
     assert.equal(result.headers.get('x-content-type-options'),'nosniff');
     assert.equal(result.headers.get('cache-control'),'private, no-store');
   }
 });
-test('built public assets contain no HTML/app scripts or source maps',() => {
-  for (const name of ['index.html','main.dart.js','flutter_bootstrap.js','browser-hooks.js','browser-storage.js','auth-guard.js']) {
+test('built public assets contain only the generic icon',() => {
+  for (const name of ['index.html','app.js','styles.css','browser-hooks.js','browser-storage.js','account-storage.js','auth-guard.js']) {
     assert.equal(existsSync(new URL(`../dist/client/${name}`,import.meta.url)),false,name);
   }
   assert.ok(existsSync(new URL('../dist/server/index.js',import.meta.url)));
   const walk = dir => readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(new URL(e.name+'/',dir)):[e.name]);
-  assert.ok(walk(new URL('../dist/client/',import.meta.url)).every(name=>!name.endsWith('.map')&&!name.endsWith('.html')));
+  assert.deepEqual(walk(new URL('../dist/client/',import.meta.url)),['favicon.png']);
   const hosting = new URL('../.openai/hosting.json',import.meta.url);
   if (existsSync(hosting)) {
     assert.equal(readFileSync(hosting,'utf8').includes('"static"'),false);

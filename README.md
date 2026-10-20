@@ -2,7 +2,7 @@
 
 <img src="assets/icon-256.png" alt="Rhythm Web icon" width="80" height="80">
 
-A habit journal built with Flutter Web, a Cloudflare Worker, and D1. Track daily habits, record time by category, explore your history, and keep your journal with your account across browsers.
+A habit journal built with React and JavaScript, a Cloudflare Worker, and D1. Track daily habits, record time by category, explore your history, and keep your journal with your account across browsers.
 
 Rhythm currently supports one administrator and one journal per deployment. Local development is supported out of the box. Hosted use requires an owner-private Sites deployment with a trusted identity gateway; other hosting environments need authentication integration before deployment. See the [deployment boundary](#deployment-boundary).
 
@@ -14,11 +14,11 @@ Rhythm currently supports one administrator and one journal per deployment. Loca
 - A reversible habit archive that preserves entries, categories, and statistics.
 - Account-backed storage, revision conflict detection, and a previous-version backup.
 - Validated JSON import and export.
-- Responsive layouts, English and Simplified Chinese interfaces.
+- Responsive React interface, light and dark appearance, English and Simplified Chinese text.
 
 ## Run locally
 
-The project has been tested with Flutter 3.47.6 and Node.js 24. You also need Git and Bash. Install Flutter and make its executable available on `PATH`, or set `FLUTTER_BIN` to its executable path. Xcode is not required for a web build.
+Install Node.js 24 or later and Git. The interface, application logic, build tools, and server are JavaScript; no additional SDK is required.
 
 Replace `YOUR_ACCOUNT` with the GitHub user or organization that hosts your copy of this repository:
 
@@ -32,7 +32,7 @@ npm run dev
 
 Open [http://127.0.0.1:8788](http://127.0.0.1:8788) and create an administrator account on first use. Choose a unique password of 15–128 characters. There is no default production account.
 
-`npm run build` resolves Dart dependencies, runs static analysis and Flutter tests, builds the web app, and bundles the Worker. A plain static server or `flutter run -d web-server` does not provide the required authentication and storage API.
+`npm run build` bundles the React journal and sign-in interfaces with esbuild, then builds the Worker. A plain static server does not provide the required authentication and storage API. Rebuild and restart the local server after changing application or server code.
 
 The development server binds to loopback and supplies a development-only platform identity. It applies the SQL migrations and persists accounts and journals in the ignored `.rhythm-data/d1/` directory. Restarting the server keeps this data; deleting that directory removes the local database. Local and hosted instances use separate databases. Do not expose the development server to the network.
 
@@ -46,11 +46,11 @@ Choose **⋯ → Archive habit** to remove a habit from today's and future lists
 
 The server stores the journal under the administrator account. Sign in to the same account at the same site address to open it in another browser. Reload an already open tab to see changes saved elsewhere; live synchronization is not implemented.
 
-Saving requires a server connection. **NOT SAVED** means the current draft is only in the open tab. Keep the tab open and export a backup before reloading or closing it. If another browser saves first, the stale write is rejected rather than overwriting that journal; export your draft before loading the current server version.
+Saving requires a server connection. **Not saved** means the current draft is only in the open tab. Keep the tab open and export a backup before reloading or closing it. If another browser saves first, the stale write is rejected rather than overwriting that journal; export your draft before loading the current server version.
 
-- **Backup → Export JSON…** downloads a separate copy.
-- **Restore from JSON…** validates a backup and, after confirmation, replaces the account journal in every browser.
-- **Export previous JSON…** downloads the snapshot from before the most recent successful save. This is one previous version, not a complete backup history.
+- **Backup options → Export JSON** downloads a separate copy.
+- **Restore from JSON** validates a backup and, after confirmation, replaces the account journal in every browser.
+- **Export previous version** downloads the snapshot from before the most recent successful save. This is one previous version, not a complete backup history.
 
 Exports use schema version 2, including duration categories and ordered sessions. Version 1 backups can be imported and upgraded. Duration integers and their sums must fit JavaScript's safe-integer range. A journal is limited to 900,000 UTF-8 bytes.
 
@@ -59,7 +59,7 @@ If an account has no journal yet, a nonempty legacy IndexedDB journal can be mig
 ## Development
 
 ```sh
-# Full build, Dart analysis, and Flutter tests
+# Production React and Worker build
 npm run build
 
 # All Node.js tests, including Worker/D1 integration tests
@@ -72,16 +72,16 @@ npm run test:worker
 npm run test:account
 ```
 
-Run the build before the Worker tests, which exercise the generated bundle. After changing only server code, `npm run build:server` can reuse the existing Flutter build. Changes to `lib/` or `web/` require a full build. The GitHub Actions workflow runs `npm run build` and `npm test` for pushes and pull requests; its results appear in the repository's Actions tab when enabled.
+Run the build before the Worker tests, which exercise the generated bundle. After changing only server code, `npm run build:server` can reuse the existing React build. Changes to `src/`, `web/`, or the sign-in HTML shell require a full build. The GitHub Actions workflow runs `npm run build` and `npm test` for pushes and pull requests; its results appear in the repository's Actions tab when enabled.
 
 | Path | Purpose |
 | --- | --- |
-| `lib/` | Flutter models, journal state, and interface |
+| `src/` | React components, journal state, validation, and styles |
 | `web/` | Browser storage, authentication lifecycle, and WebMCP integration |
 | `worker/` | Authentication and account journal API |
 | `drizzle/` | D1 schema migrations |
 | `scripts/` | Build and local preview tools |
-| `test/` | Dart and Node.js tests with synthetic data |
+| `test/` | JavaScript tests with synthetic data |
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for development and privacy guidelines.
 
