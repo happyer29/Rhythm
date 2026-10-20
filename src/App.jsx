@@ -1583,15 +1583,27 @@ function Insights({
             </button>
           </div>
         </div>
-        <div className="heatmap-scroll">
+        <div
+          className="heatmap-scroll"
+          style={{ "--heat-weeks": heatDays.length / 7 }}
+        >
           <div className="heatmap-months">
-            {Array.from({ length: 12 }, (_, month) => (
-              <span key={month}>
-                {new Date(2024, month, 1).toLocaleDateString(locale, {
-                  month: "short",
-                })}
-              </span>
-            ))}
+            {Array.from({ length: 12 }, (_, month) => {
+              const monthDay = `${String(year).padStart(4, "0")}-${String(month + 1).padStart(2, "0")}-01`;
+              const column =
+                Math.floor(
+                  (Date.parse(`${monthDay}T12:00:00Z`) -
+                    Date.parse(`${firstMonday}T12:00:00Z`)) /
+                    (7 * 86400000),
+                ) + 1;
+              return (
+                <span key={month} style={{ gridColumn: `${column} / span 3` }}>
+                  {civilDate(monthDay).toLocaleDateString(locale, {
+                    month: "short",
+                  })}
+                </span>
+              );
+            })}
           </div>
           <div className="heatmap-grid">
             {heatDays.map((current) => {

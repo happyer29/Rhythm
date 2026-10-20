@@ -1,4 +1,6 @@
 .rf-modal {
+  --rf-modal-gutter: 24px;
+  --rf-control-height: 46px;
   width: min(480px, calc(100vw - 32px));
   max-width: none;
   max-height: calc(100dvh - 48px);
@@ -24,8 +26,11 @@
   justify-content: space-between;
   align-items: flex-start;
   gap: 24px;
-  padding: 28px 30px 24px;
+  padding: 24px var(--rf-modal-gutter);
   border-bottom: 1px solid var(--line, #dde4dd);
+}
+.rf-modal-heading > div {
+  min-width: 0;
 }
 .rf-modal-heading h2 {
   margin: 0;
@@ -41,7 +46,16 @@
   line-height: 1.6;
 }
 .rf-modal-body {
-  padding: 24px 30px;
+  padding: 24px var(--rf-modal-gutter);
+}
+.rf-modal-body > :first-child {
+  margin-top: 0;
+}
+.rf-modal-body > :last-child {
+  margin-bottom: 0;
+}
+.rf-modal-body > .rf-form-actions:last-child {
+  padding-bottom: 0;
 }
 .rf-modal-body-flush {
   padding: 0;
@@ -65,7 +79,7 @@
   background: var(--canvas, #f5f7f3);
 }
 .rf-form {
-  padding: 25px 30px 0;
+  padding: 24px var(--rf-modal-gutter) 0;
 }
 .rf-fields,
 .rf-choice-fieldset {
@@ -76,7 +90,7 @@
 }
 .rf-fields {
   display: grid;
-  gap: 23px;
+  gap: 24px;
 }
 .rf-choice-fieldset legend,
 .rf-field > span,
@@ -130,6 +144,10 @@
   border-color: var(--accent, #19796b);
   box-shadow: 0 0 0 3px #19796b14;
 }
+.rf-field input,
+.rf-field select {
+  height: var(--rf-control-height, 46px);
+}
 .rf-field input::placeholder,
 .rf-field textarea::placeholder,
 .rf-draft-input textarea::placeholder {
@@ -154,7 +172,7 @@
 }
 .rf-form-row {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr));
   gap: 16px;
 }
 .rf-hint {
@@ -232,7 +250,7 @@
 .rf-appearance {
   display: flex;
   flex-wrap: wrap;
-  gap: 24px 30px;
+  gap: 24px;
 }
 .rf-swatches,
 .rf-symbols {
@@ -294,10 +312,11 @@
 }
 .rf-form-actions {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: flex-end;
   gap: 10px;
-  padding: 22px 0;
+  padding: 24px 0;
   margin-top: 24px;
   border-top: 1px solid var(--line, #dde4dd);
 }
@@ -306,6 +325,8 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
+  max-width: 100%;
+  overflow-wrap: anywhere;
   border: 1px solid transparent;
   border-radius: 10px;
   font: inherit;
@@ -385,7 +406,7 @@
 .rf-duration-total {
   display: grid;
   justify-items: center;
-  padding: 22px;
+  padding: 24px;
   border-radius: 15px;
   background: var(--canvas, #f5f7f3);
 }
@@ -407,9 +428,14 @@
 }
 .rf-section-heading {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 18px;
+  gap: 12px 16px;
+}
+.rf-section-heading > div {
+  flex: 1 1 240px;
+  min-width: 0;
 }
 .rf-section-heading h3 {
   margin: 0;
@@ -440,20 +466,22 @@
 }
 .rf-session {
   display: grid;
-  grid-template-columns: 24px minmax(0, 1fr) 100px 32px;
+  grid-template-columns: 24px minmax(0, 1fr) 100px 36px;
   align-items: end;
   gap: 12px;
 }
 .rf-session-number {
-  padding-bottom: 14px;
+  display: grid;
+  place-items: center;
+  height: var(--rf-control-height, 46px);
   color: var(--muted, #6d7b74);
   font-size: 11px;
   font-variant-numeric: tabular-nums;
 }
 .rf-remove-session {
   align-self: end;
-  margin-bottom: 5px;
-  min-width: 32px;
+  height: var(--rf-control-height, 46px);
+  min-width: 36px;
 }
 .rf-remove-session:hover {
   background: #b7483c0a;
@@ -463,6 +491,9 @@
   display: flex;
   align-items: stretch;
   gap: 10px;
+}
+.rf-inline-input > input {
+  flex: 1 1 0;
 }
 .rf-inline-input > button {
   flex: 0 0 auto;
@@ -474,8 +505,8 @@
 }
 .rf-unassigned .rf-field {
   display: grid;
-  grid-template-columns: 1fr 100px;
-  gap: 20px;
+  grid-template-columns: minmax(0, 1fr) 100px;
+  gap: 16px;
   align-items: center;
 }
 .rf-unassigned .rf-field > span {
@@ -506,6 +537,7 @@
   place-items: center;
   width: 26px;
   height: 26px;
+  flex: 0 0 auto;
   border: 1.5px solid var(--line, #dde4dd);
   border-radius: 8px;
   color: transparent;
@@ -541,6 +573,7 @@
   padding: 8px 12px;
   cursor: pointer;
   overflow-wrap: anywhere;
+  max-width: 100%;
 }
 .rf-option-pill:hover:not(:disabled) {
   border-color: var(--accent, #19796b);
@@ -583,6 +616,7 @@
   font-size: 10px;
   color: var(--muted, #6d7b74);
   overflow-wrap: anywhere;
+  max-width: 100%;
 }
 .rf-duration-categories b {
   margin-left: 7px;
@@ -593,6 +627,9 @@
   display: flex;
   align-items: flex-start;
   gap: 9px;
+}
+.rf-draft-line > textarea {
+  flex: 1 1 0;
 }
 .rf-draft-line > button {
   flex: 0 0 auto;
@@ -607,11 +644,14 @@
 }
 .rf-number-wrap {
   display: flex;
+  flex: 1 1 0;
   min-width: 0;
   align-items: center;
   gap: 10px;
 }
 .rf-number-wrap input {
+  flex: 0 1 120px;
+  min-width: 64px;
   max-width: 120px;
   font-size: 19px;
   line-height: 1;
@@ -619,6 +659,7 @@
   font-variant-numeric: tabular-nums;
 }
 .rf-number-wrap > span {
+  min-width: 0;
   font-size: 12px;
   color: var(--muted, #6d7b74);
   overflow-wrap: anywhere;
@@ -661,25 +702,27 @@
 @media (max-width: 600px) {
   .rf-modal,
   .rf-modal-wide {
+    --rf-modal-gutter: 20px;
+    --rf-control-height: 48px;
     width: calc(100vw - 20px);
     max-height: calc(100dvh - 20px);
     border-radius: 18px;
   }
   .rf-modal-heading {
-    padding: 22px 19px 19px;
+    padding: 20px var(--rf-modal-gutter);
     gap: 12px;
   }
   .rf-modal-heading h2 {
     font-size: 22px;
   }
   .rf-modal-body {
-    padding: 21px 19px;
+    padding: 20px var(--rf-modal-gutter);
   }
   .rf-modal-body-flush {
     padding: 0;
   }
   .rf-form {
-    padding: 21px 19px 0;
+    padding: 20px var(--rf-modal-gutter) 0;
   }
   .rf-kind-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -695,7 +738,7 @@
     font-size: 16px;
   }
   .rf-session {
-    grid-template-columns: minmax(0, 1fr) 78px 30px;
+    grid-template-columns: minmax(0, 1fr) 78px 36px;
     gap: 8px;
   }
   .rf-session-number {
@@ -706,11 +749,11 @@
   }
   .rf-section-heading {
     align-items: flex-start;
-    gap: 10px;
+    gap: 12px;
   }
   .rf-section-heading .rf-button {
-    font-size: 11px;
-    padding: 9px;
+    font-size: 12px;
+    padding: 9px 12px;
   }
   .rf-inline-input {
     flex-wrap: wrap;
@@ -722,8 +765,8 @@
     flex: 1 1 110px;
   }
   .rf-form-actions {
-    margin-top: 22px;
-    padding: 19px 0;
+    margin-top: 20px;
+    padding: 20px 0;
   }
   .rf-choice-options {
     gap: 7px;
